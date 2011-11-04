@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use DBI;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 sub new
@@ -199,7 +199,7 @@ sub AllSynsets
 1;
 __END__
 
-~encoding utf8
+=encoding utf8
 
 =head1 NAME
 
