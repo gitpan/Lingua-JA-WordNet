@@ -24,8 +24,10 @@ t/05_rel.t
 t/06_def.t
 t/07_ex.t
 t/08_allsynsets.t
+t/09_pos.t
 t/20_enable_utf8.t
 t/21_under_score.t
+t/22_no_verbose.t
 wordnet/test.db
 xt/01_podspell.t
 xt/02_perlcritic.t
