@@ -5,10 +5,11 @@ author:
 build_requires:
   ExtUtils::MakeMaker: 6.59
   Test::Exception: 0
-  Test::More: 0.88
+  Test::More: 0.98
   Test::Warn: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.59
+  File::ShareDir: 0
 distribution_type: module
 dynamic_config: 1
 generated_by: 'Module::Install version 1.06'
@@ -16,10 +17,12 @@ license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
+module_name: Lingua::JA::WordNet
 name: Lingua-JA-WordNet
 no_index:
   directory:
     - inc
+    - share
     - t
     - xt
 requires:
@@ -31,4 +34,4 @@ resources:
   bugtracker: https://github.com/pawa-/Lingua-JA-WordNet/issues
   license: http://dev.perl.org/licenses
   repository: https://github.com/pawa-/Lingua-JA-WordNet
-version: 0.05
+version: 0.10

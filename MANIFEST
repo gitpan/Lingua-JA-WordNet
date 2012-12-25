@@ -7,6 +7,7 @@ inc/Module/Install/Fetch.pm
 inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
 inc/Module/Install/ReadmeFromPod.pm
+inc/Module/Install/Share.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 INSTALL
@@ -14,9 +15,9 @@ lib/Lingua/JA/WordNet.pm
 Makefile.PL
 MANIFEST			This list of files
 META.yml
-MYMETA.json
-MYMETA.yml
 README
+share/LICENSE.txt
+share/wnjpn-1.1.db
 t/00_compile.t
 t/01_basic.t
 t/02_word.t
@@ -35,4 +36,5 @@ xt/01_podspell.t
 xt/02_perlcritic.t
 xt/03_pod.t
 xt/04_synopsis.t
+xt/10_allsynsets_format_check.t
 xt/perlcriticrc
