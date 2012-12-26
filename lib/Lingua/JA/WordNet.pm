@@ -8,7 +8,7 @@ use DBI;
 use Carp ();
 use File::ShareDir ();
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 my $DB_FILE = 'wnjpn-1.1.db';
 
@@ -63,6 +63,8 @@ sub Word
 {
     my ($self, $synset, $lang) = @_;
 
+    $lang = 'jpn' unless defined $lang;
+
     my $sth
         = $self->{dbh}->prepare
         (
@@ -84,6 +86,8 @@ sub Synset
 {
     my ($self, $word, $lang) = @_;
 
+    $lang = 'jpn' unless defined $lang;
+
     my $sth
         = $self->{dbh}->prepare
         (
@@ -94,14 +98,7 @@ sub Synset
 
     $sth->execute($word, $lang);
 
-    my (@synsets, $synset);
-
-    $sth->bind_columns( \($synset) );
-
-    while ($sth->fetchrow_arrayref)
-    {
-        push(@synsets, $synset);
-    }
+    my @synsets = map {$_->[0]} @{$sth->fetchall_arrayref};
 
     Carp::carp "Synset: there are no synsets for $word in $lang" if $self->{verbose} && ! scalar @synsets;
 
@@ -111,6 +108,8 @@ sub Synset
 sub SynPos
 {
     my ($self, $word, $pos, $lang) = @_;
+
+    $lang = 'jpn' unless defined $lang;
 
     my $sth
         = $self->{dbh}->prepare
@@ -123,14 +122,7 @@ sub SynPos
 
     $sth->execute($word, $pos, $lang);
 
-    my (@synsets, $synset);
-
-    $sth->bind_columns( \($synset) );
-
-    while ($sth->fetchrow_arrayref)
-    {
-        push(@synsets, $synset);
-    }
+    my @synsets = map {$_->[0]} @{$sth->fetchall_arrayref};
 
     Carp::carp "SynPos: there are no synsets for $word corresponding to '$pos' and '$lang'" if $self->{verbose} && ! scalar @synsets;
 
@@ -170,6 +162,8 @@ sub Def
 {
     my ($self, $synset, $lang) = @_;
 
+    $lang = 'jpn' unless defined $lang;
+
     my $sth
         = $self->{dbh}->prepare
         (
@@ -180,12 +174,11 @@ sub Def
 
     $sth->execute($synset, $lang);
 
-    my (@defs, $sid, $def);
+    my @defs;
 
-    $sth->bind_columns( \($sid, $def) );
-
-    while ($sth->fetchrow_arrayref)
+    while (my $row = $sth->fetchrow_arrayref)
     {
+        my ($sid, $def) = @{$row};
         $defs[$sid] = $def;
     }
 
@@ -198,6 +191,8 @@ sub Ex
 {
     my ($self, $synset, $lang) = @_;
 
+    $lang = 'jpn' unless defined $lang;
+
     my $sth
         = $self->{dbh}->prepare
         (
@@ -208,12 +203,11 @@ sub Ex
 
     $sth->execute($synset, $lang);
 
-    my (@exs, $sid, $ex);
+    my @exs;
 
-    $sth->bind_columns( \($sid, $ex) );
-
-    while ($sth->fetchrow_arrayref)
+    while (my $row = $sth->fetchrow_arrayref)
     {
+        my ($sid, $ex) = @{$row};
         $exs[$sid] = $ex;
     }
 
@@ -228,10 +222,11 @@ sub AllSynsets
     my $sth = $self->{dbh}->prepare('SELECT synset FROM synset');
     $sth->execute;
     my @synsets = map {$_->[0]} @{$sth->fetchall_arrayref};
-    return @synsets;
+    return \@synsets;
 }
 
 1;
+
 __END__
 
 =encoding utf8
@@ -248,9 +243,9 @@ my ($db_path, %config, $synset, $lang, $pos, $rel);
   use Lingua::JA::WordNet;
 
   my $wn = Lingua::JA::WordNet->new;
-  my @synsets = $wn->Synset('相撲', 'jpn');
+  my @synsets = $wn->Synset('相撲');
   my @hypes   = $wn->Rel($synsets[0], 'hype');
-  my @words   = $wn->Word($hypes[0], 'jpn');
+  my @words   = $wn->Word($hypes[0]);
 
   print "$words[0]\n";
   # -> レスリング
@@ -273,22 +268,22 @@ Creates a new Lingua::JA::WordNet instance.
 
   my $wn = Lingua::JA::WordNet->new(
       data        => $db_path, # default is File::ShareDir::dist_file('Lingua-JA-WordNet', 'wnjpn-1.1.db')
-      enable_utf8 => 1,        # default is 0 (see sqlite_unicode attribute of L<DBD::SQLite>)
+      enable_utf8 => 1,        # default is 0 (see sqlite_unicode attribute of DBD::SQLite)
       verbose     => 0,        # default is 0 (all warnings are ignored)
   );
 
 The data must be Japanese WordNet and English WordNet in an SQLite3 database.
 
 
-=head2 @words = $wn->Word($synset, $lang)
+=head2 @words = $wn->Word( $synset [, $lang] )
 
 Returns the words corresponding to $synset and $lang.
 
-=head2 @synsets = $wn->Synset($word, $lang)
+=head2 @synsets = $wn->Synset( $word [, $lang] )
 
 Returns the synsets corresponding to $word and $lang.
 
-=head2 @synsets = $wn->SynPos($word, $pos, $lang)
+=head2 @synsets = $wn->SynPos( $word, $pos [, $lang] )
 
 Returns the synsets corresponding to $word, $pos and $lang.
 
@@ -300,22 +295,22 @@ Returns the part of speech of $synset.
 
 Returns the relational synsets corresponding to $synset and $rel.
 
-=head2 @defs = $wn->Def($synset, $lang)
+=head2 @defs = $wn->Def( $synset [, $lang] )
 
 Returns the definition sentences corresponding to $synset and $lang.
 
-=head2 @exs = $wn->Ex($synset, $lang)
+=head2 @exs = $wn->Ex( $synset [, $lang] )
 
 Returns the example sentences corresponding to $synset and $lang,
 
-=head2 @allsynsets = $wn->AllSynsets()
+=head2 $allsynsets_arrayref = $wn->AllSynsets()
 
 Returns all synsets.
 
 
 =head2 LANGUAGES
 
-$lang can take 'jpn' or 'eng'.
+$lang can take 'jpn' or 'eng'. The default value is 'jpn'.
 
 
 =head2 PARTS OF SPEECH
