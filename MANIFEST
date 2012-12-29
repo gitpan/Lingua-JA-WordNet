@@ -1,5 +1,6 @@
 benchmark/AllSynsets.pl
 benchmark/Def.pl
+benchmark/Synonyms.pl
 benchmark/Synset.pl
 Changes
 inc/Module/Install.pm
@@ -20,7 +21,7 @@ MANIFEST			This list of files
 META.yml
 README
 share/LICENSE.txt
-share/wnjpn-1.1.db
+share/wnjpn-1.1_and_synonyms-1.0.db
 t/00_compile.t
 t/01_basic.t
 t/02_word.t
@@ -31,13 +32,17 @@ t/06_def.t
 t/07_ex.t
 t/08_allsynsets.t
 t/09_pos.t
+t/10_wordid.t
+t/11_synonym.t
 t/20_enable_utf8.t
 t/21_under_score.t
 t/22_no_verbose.t
+tool/tsv_to_db.pl
 wordnet/test.db
 xt/01_podspell.t
 xt/02_perlcritic.t
 xt/03_pod.t
 xt/04_synopsis.t
 xt/10_allsynsets_format_check.t
+xt/11_duplication_check.t
 xt/perlcriticrc

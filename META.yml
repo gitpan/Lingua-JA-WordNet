@@ -29,9 +29,10 @@ requires:
   Carp: 0
   DBD::SQLite: 1.27
   DBI: 0
-  perl: 5.8.1
+  List::MoreUtils: 0
+  perl: 5.8.8
 resources:
   bugtracker: https://github.com/pawa-/Lingua-JA-WordNet/issues
   license: http://dev.perl.org/licenses
   repository: https://github.com/pawa-/Lingua-JA-WordNet
-version: 0.12
+version: 0.20
